@@ -1,11 +1,13 @@
 from test import regex
-from userClass import *
-from orderClass import *
-from adminClass import *
-from customerClass import *
+from userClass import User
+from orderClass import Order
+from adminClass import Admin
+from customerClass import Customer
+from cafeteriaClass import Cafeteria
 import bcrypt
 import re
 import sys
+from pathlib import Path
 
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
@@ -59,80 +61,82 @@ def placeAnOrder():
 
 
 # Start of the program
-print("Welcome to ALU CAFETERIA")
+# print("Welcome to ALU CAFETERIA")
 
 
 
 def welcome():
     print("Welcome, here is the Menu!")
 
-
-def gainAccess(name=None, Password=None):
-    print("Welcome to Log in page!\n")
-    while True:
-        email = input("Enter your email:")
-        Password = input("Enter your Password:")
-        data=''
-        if len(name) > 0 and len(Password) > 0:
-            db = open("database.txt", "r")
-            names = []
-            emails = []
-            passwords = []
-            for i in db:
-                name, email, password = i.split(",")
-                email = email.strip()
-                emails.append(email)
-                password = password.strip()
-                passwords.append(password)
-                data = list(zip(name,email,password))
-                print(data)
-            try:
-                if email in emails:
-
-                    hashed = data[email].strip('b')
-                    hashed = hashed.replace("'", "")
-                    hashed = hashed.encode('utf-8')
-
-                    try:
-                        if bcrypt.checkpw(Password.encode(), hashed):
-                            print("Login success!")
-                            print("Hi", name)
-                            welcome()
-                        else:
-                            print("Wrong password. Try again!")
-
-                    except:
-                        print("Incorrect passwords or email")
-                else:
-                    print("Email not registered. Please register")
-                    registered = False
-            except:
-                print("Password or username doesn't exist")
-        else:
-            print("Error logging into the system")
-
-        else:
-            print("Please attempt login again")
-            gainAccess()
-        loginStatus = ""
-        for user in user_records:
-            if user.name == name:
-                loginStatus = user.login(password)
-                break
-        if loginStatus == "success" and user_role == "Customer":
-            new_order = Order()
-            item = placeAnOrder()
-            new_order.order_items.append(item)
-
-            while True:
-                repeat = input(
-                    "Enter 1 if you want to place another order or any other key if you have no further orders: ")
-                if repeat != "1":
-                    break
-                item = placeAnOrder()
-                new_order.order_items.append(item)
-                new_order.checkout()
-        # # b = b.strip()
+#
+# def gainAccess():
+#     print("Welcome to Log in page!\n")
+#     while True:
+#         email = input("Enter your email:")
+#         Password = input("Enter your Password:")
+#         data=''
+#         if len(name) > 0 and len(Password) > 0:
+#             db = open("database.txt", "r")
+#             names = []
+#             emails = []
+#             passwords = []
+#             for i in db:
+#                 name, email, password = i.split(",")
+#                 names.append(name)
+#                 email = email.strip()
+#                 emails.append(email)
+#                 password = password.strip()
+#                 passwords.append(password)
+#             data = list(zip(names,emails,passwords))
+#             try:
+#                 if email in emails:
+#
+#
+#
+#                     hashed = data[email].strip('b')
+#                     hashed = hashed.replace("'", "")
+#                     hashed = hashed.encode('utf-8')
+#
+#                     try:
+#                         if bcrypt.checkpw(Password.encode(), hashed):
+#                             print("Login success!")
+#                             print("Hi", name)
+#                             welcome()
+#                         else:
+#                             print("Wrong password. Try again!")
+#
+#                     except:
+#                         print("Incorrect passwords or email")
+#                 else:
+#                     print("Email not registered. Please register")
+#                     registered = False
+#             except:
+#                 print("Password or username doesn't exist")
+#         else:
+#             print("Error logging into the system")
+#
+#         else:
+#             print("Please attempt login again")
+#             gainAccess()
+#         loginStatus = ""
+#         for user in user_records:
+#             if user.name == name:
+#                 loginStatus = user.login(password)
+#                 break
+#         if loginStatus == "success" and user_role == "Customer":
+#             new_order = Order()
+#             item = placeAnOrder()
+#             new_order.order_items.append(item)
+#
+#             while True:
+#                 repeat = input(
+#                     "Enter 1 if you want to place another order or any other key if you have no further orders: ")
+#                 if repeat != "1":
+#                     break
+#                 item = placeAnOrder()
+#                 new_order.order_items.append(item)
+#                 # new_order.checkout()
+#         # # b = b.strip()
 
 
 # accessDb()
@@ -149,7 +153,7 @@ def register():
     print("Welcome to Sign up page!\n")
     while True:
         name = input("Enter your name:")
-        email = input("Enter your email")
+        email = input("Enter your email:")
         Password1 = input("Create password with at least 8 characters:")
         Password2 = input("Confirm Password:")
         user_role = ""
@@ -174,16 +178,18 @@ def register():
         if check_email(email) == "Invalid Email":
             email_valid = False
 
+        file_name = Path('database.txt')
+        file_name.touch(exist_ok=True)
         db = open("database.txt", "r")
-        d = []
+        emails = []
         # Appending all emails in a list
         for i in db:
-            a, b, c = i.split(",")
-            b = b.strip()
-            d.append(b)
+            registered_name, registered_email, password,registered_role = i.split(",")
+            email = email.strip()
+            emails.append(registered_email)
         db.close()
         email_exists = False
-        for m in d:
+        for m in emails:
             if m == email:
                 email_exists = True
 
@@ -202,13 +208,13 @@ def register():
             print("Could not confirm password.")
         elif len(Password1) < 8:
             print("Password should be at least 8 characters.")
-        elif len(name)>0:
+        elif len(name)==0:
             print("Please provide your name!")
         elif not email_valid:
             print("Email format is wrong.")
         elif email_exists:
             print("Email is already registered. You can login!")
-            gainAccess()
+            # gainAccess()
             break
         elif not passcodeValid:
             print("You could not verify that you are an Admin. Please enter the passcode correctly or register as a"
@@ -218,19 +224,22 @@ def register():
 
         try_again = input("Enter Y if you would to try again or press any other key if you want to exit: ")
         if try_again.upper() != "Y":
-            sys.exit()
+            sys.exit("Thank you!")
 
     print("After registering, you should now log in to continue!")
-    gainAccess()
+    # gainAccess()
 
 
-def home(option=None):
-    print("Welcome, please select an option")
+def home():
+    # print("Welcome, please select an option")
+    alu_cafe = Cafeteria()
+    alu_cafe.cafe_details()
     option = int(input("1.Signup \n2.Login \nEnter your choice: "))
     if option == 1:
         register()
     elif option == 2:
-        gainAccess()
+        pass
+        # gainAccess()
     else:
         sys.exit("Invalid input! Try again you should enter 1 or 2.")
 
