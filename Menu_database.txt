@@ -1,13 +1,10 @@
-burger@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-nuggets@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-nuggets@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-burger@Chicken,Onions@2500
-burger@Chicken,Onions@2500
+1@burger@Chicken,Onions@2500
+2@nuggets@Chicken,Onions@2500
+3@Samosa@onions,meat,flour@300
+4@Beef burger@Bread@9000
+5@Chicken burger@Bread@9000
+6@Kebab@bread@6000
+7@ice cream@cream@3000
+8@majinto@fruits@5000
+5000
+@Mohito@majinto@fruits

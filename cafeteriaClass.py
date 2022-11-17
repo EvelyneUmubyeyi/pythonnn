@@ -18,12 +18,14 @@ class Cafeteria:
 
         # count = 1
         for line in lines:
-            name, ingredients, price = line.split("@")
+            code, name, ingredients, price = line.split("@")
             price = price.strip("\n")
+            print("Code: ", code)
             print("Name: ", name)
             print("Ingredients: ", ingredients)
             print(f"Price: {price} RWF")
             print("-------------------------------------------------")
+            # count += 1
 
 
     def cafe_details(self):

@@ -17,7 +17,7 @@ class Order:
         order_string = email+"#"
         for item in self.order_items:
             order_string += item[0].name+"`"+str(item[1])+"^"
-            self.total_price += item[0].price*item[1]
+            self.total_price += int(item[0].price)*item[1]
 
         order_string = order_string[:-1]
         order_string += "%" + str(self.total_price)+"\n"
@@ -39,7 +39,7 @@ class Order:
     def printOrder(self):
         print("You ordered: \n")
         for item in self.order_items:
-            print(item[1], " ", item[0].name, ": ", item[0].price*item[1], " Rwf")
+            print(item[1], " ", item[0].name, ": ", int(item[0].price)*item[1], " Rwf")
 
 # prd = Product("burger","Chicken,Onions",2500)
 # prd_two = Product("nuggets","Chicken,Onions",2500)
